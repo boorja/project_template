@@ -1,0 +1,15 @@
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.csv
+*.tsv
+*.txt
+Py_libs/
+logs/
+data/
+results/
+__pycache__/
+*.zip
