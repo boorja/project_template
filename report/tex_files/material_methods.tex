@@ -27,3 +27,17 @@ Todos los análisis se realizaron en el entorno de programación \textbf{R} (v4.
 	
 	\item \textbf{Corrección de Benjamini-Hochberg (BH):} Al realizar miles de pruebas estadísticas simultáneamente (una por cada término GO), aumenta la probabilidad de obtener falsos positivos. El método de Benjamini-Hochberg es un procedimiento estándar para controlar la tasa de falso descubrimiento (FDR), ajustando los p-valores para reducir la proporción de resultados significativos que en realidad son fruto del azar \cite{Benjamini1995}.
 \end{itemize}
+
+\subsection{Métodos}
+
+\subsubsection{Adquisición de Datos y Construcción de la Red}
+El conjunto inicial de genes se obtuvo mediante una consulta a la API de la \textbf{Human Phenotype Ontology (HPO)} utilizando el término "Raynaud phenomenon" (ID: \textbf{HP:0030881}). La lista de símbolos de genes resultante se utilizó como entrada para construir una red de interacción proteína-proteína (PPI) para \textit{Homo sapiens} a partir de la base de datos \textbf{STRING}. Se aplicó un filtro de alta confianza, reteniendo únicamente las interacciones con un \textbf{puntaje combinado superior a 0.800}. La red final se representó como un grafo no dirigido.
+
+\subsubsection{Análisis Estructural y de Comunidades}
+Las propiedades topológicas de la red fueron analizadas con el paquete \texttt{igraph}. Se calcularon métricas globales (número de nodos y aristas, densidad) y locales (grado promedio, centralidad de cercanía). Posteriormente, se aplicó el \textbf{algoritmo de Louvain} para particionar la red en módulos funcionales basándose en su estructura de conectividad.
+
+
+\subsubsection{Análisis de Enriquecimiento Funcional}
+Cada módulo identificado en el paso anterior fue sometido a un \textbf{Análisis de Sobrerrepresentación (ORA)} utilizando el paquete \texttt{clusterProfiler}. Se evaluó el enriquecimiento de términos de la ontología de \textbf{Proceso Biológico (BP)} de Gene Ontology (GO). Los p-valores resultantes se ajustaron mediante el método de \textbf{Benjamini-Hochberg}, y se consideraron como estadísticamente significativos aquellos términos con un \textbf{p-valor ajustado inferior a 0.05}.
+
+
