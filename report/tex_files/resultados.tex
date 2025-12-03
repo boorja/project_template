@@ -78,3 +78,42 @@ Para examinar la organización espacial de estas interacciones, se generaron vis
 \clearpage
 
 
+\\
+
+
+
+
+
+
+\subsection{Detección de Comunidades (Clustering)}
+
+Con el objetivo de definir módulos funcionales discretos, se aplicó el algoritmo de \textbf{Louvain} \cite{Csardi2006}. Este método particionó la red en \textbf{9 clústeres distintos}, optimizando la densidad de enlaces intra-grupo frente a la inter-grupo.
+
+El análisis arrojó una modularidad global de \textbf{Q = 0.3358}, confirmando una estructura comunitaria bien definida. Aunque se detectaron 9 grupos, la distribución de tamaños (16, 16, 10, 6, 1, 1, 1, 2, 1) indica que la funcionalidad biológica reside principalmente en los cuatro primeros clústeres, mientras que el resto son componentes periféricos o aislados.
+
+El siguiente fragmento de código ilustra la implementación del algoritmo utilizado para esta partición:
+
+\begin{lstlisting}[caption=Detección de comunidades mediante algoritmo Louvain en R]
+	# Deteccion de comunidades (Algoritmo Louvain)
+	set.seed(123)
+	comunidades <- cluster_louvain(g)
+	V(g)$cluster <- membership(comunidades)
+	
+	# Evaluacion de la calidad de la particion
+	Q_val <- modularity(comunidades) 
+	# Resultado obtenido: Q = 0.3358
+\end{lstlisting}
+
+La Figura \ref{fig:Clusters_Blobs_Igraph} muestra la topología de estas comunidades, destacando la separación entre el núcleo denso de los clústeres 1, 2 y 3, y la posición más periférica del clúster 4. 
+
+
+
+\subsection{Enriquecimiento funcional (GO – Biological Process)}
+
+Para descifrar la "personalidad biológica" de cada comunidad detectada, se realizó un análisis de enriquecimiento funcional (ORA) sobre los términos de Gene Ontology (Biological Process), aplicando corrección por Benjamini–Hochberg \cite{Benjamini1995}.
+
+El análisis estratificado reveló perfiles funcionales altamente específicos para los cuatro clústeres principales:
+
+\begin{itemize}
+	\item \textbf{Cluster 1 (Activación Inmune):} Agrupa genes como \textit{RNF125} e \textit{IRAK1}. El análisis (Figura \ref{fig:Enrichment_C1}) mostró un enriquecimiento significativo en la "activación de la vía de señalización inmune innata". Es el motor de arranque de la respuesta inflamatoria.
+
