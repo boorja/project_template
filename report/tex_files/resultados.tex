@@ -39,6 +39,42 @@ Se observó que el gen \textbf{IRF5} actúa como el principal \textit{hub} de la
 
 
 
+\begin{table}[htbp]
+	\centering
+	\caption{Genes más relevantes según métricas de centralidad.}
+	\label{tab:top_nodes}
+	\vspace{4pt}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{lccc}
+		\hline
+		\textbf{Gen} & \textbf{Cluster} & \textbf{Grado (Degree)} & \textbf{Intermediación (Betweenness)} \\ \hline
+		IRF5    & 1 & 22 & 0.0768 \\
+		ITGAM   & 2 & 21 & 0.0726 \\
+		IL10    & 2 & 19 & 0.1171 \\
+		IFIH1   & 3 & 19 & \textbf{0.1785} \\
+		TLR7    & 2 & 18 & 0.0468 \\
+		TNFAIP3 & 1 & 18 & 0.0307 \\ \hline
+	\end{tabular}
+\end{table}
 
+\subsection{Visualización de la red}
+
+Para examinar la organización espacial de estas interacciones, se generaron visualizaciones utilizando el algoritmo de disposición Fruchterman–Reingold, que optimiza la posición de los nodos basándose en fuerzas de atracción y repulsión (Figura \ref{fig:Red_Raynaud_Premium}). En dicha visualización, el tamaño de los nodos se escaló proporcionalmente a su grado, permitiendo apreciar visualmente cómo los \textit{hubs} identificados (IRF5, ITGAM) ocupan posiciones centrales y articulan la estructura de la red.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/Red_Raynaud.png}
+	\caption{Visualización de la red de interacción proteína-proteína. El tamaño de los nodos es proporcional a su conectividad.}
+	\label{fig:Red_Raynaud_Premium}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figures/Clusters_Blobs.png}
+	\caption{Comunidades detectadas por el algoritmo de Louvain. Las áreas sombreadas agrupan nodos densamente conectados.}
+	\label{fig:Clusters_Blobs_Igraph}
+\end{figure}
+
+\clearpage
 
 
