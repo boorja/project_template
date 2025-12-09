@@ -1,7 +1,23 @@
 # Proyecto de Biología de Sistemas
-## Análisis de Red de Interacción Génica - Fenómeno de Raynaud
+## Análisis de Red de Interacción Génica del Fenómeno de Raynaud
 
-Este proyecto realiza un análisis de redes de interacción proteína-proteína para genes asociados al **Fenómeno de Raynaud** (HPO: HP:0030880), utilizando datos de la Human Phenotype Ontology (HPO) y STRINGdb.
+[![R](https://img.shields.io/badge/R-4.0+-blue.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-Academic-green.svg)](#licencia)
+
+Este proyecto implementa un análisis de redes de interacción proteína-proteína (PPI) para genes asociados al **Fenómeno de Raynaud** (HPO: HP:0030880), utilizando datos de la Human Phenotype Ontology (HPO) y STRINGdb. El análisis integra detección de comunidades, métricas topológicas y enriquecimiento funcional mediante Gene Ontology.
+
+---
+
+## 📋 Tabla de Contenidos
+
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Requisitos Previos](#-requisitos-previos)
+- [Instalación](#-instalación)
+- [Uso](#-uso)
+- [Pipeline de Análisis](#-pipeline-de-análisis)
+- [Resultados Generados](#-resultados-generados)
+- [Solución de Problemas](#-solución-de-problemas)
+- [Autores](#-autores)
 
 ---
 
@@ -9,204 +25,262 @@ Este proyecto realiza un análisis de redes de interacción proteína-proteína 
 
 ```
 project_template/
-├── code/               # Scripts de ejecución
-├── report/             # Documentación y memoria del proyecto
-├── results/            # Resultados generados (tablas y figuras)
-└── software/           # Librerías de R instaladas localmente
+├── code/                   # Scripts de ejecución
+│   ├── setup.sh           # Configuración e instalación de dependencias R
+│   ├── launch.sh          # Lanzador del análisis
+│   └── analyse_raynaud.R  # Pipeline principal de análisis
+├── report/                 # Documentación y memoria LaTeX
+│   ├── report.tex         # Documento principal
+│   ├── bibliography/      # Referencias bibliográficas (.bib)
+│   ├── figures/           # Figuras para el informe
+│   └── tex_files/         # Secciones del documento
+├── results/                # Resultados generados (CSVs y PNGs)
+├── software/               # Librerías R instaladas localmente
+└── README.md
 ```
 
 ---
 
-## 📂 Descripción de Carpetas
+## 💻 Requisitos Previos
 
-### `code/`
-Contiene los scripts ejecutables del análisis. **Ver sección detallada más abajo.**
+### Sistema Operativo
+- **Linux/Ubuntu** (recomendado) o WSL en Windows
+- **macOS** (con Homebrew para dependencias)
 
-### `report/`
-Contiene la memoria del proyecto en formato LaTeX:
-- `report.tex` - Documento principal
-- `bibliography/` - Referencias bibliográficas (.bib)
-- `figures/` - Figuras para el informe
-- `tex_files/` - Secciones del documento (introducción, métodos, resultados, discusión, conclusiones, anexo)
+### Software Base
+- **R** versión 4.0 o superior
+- **Conexión a internet** (para descargar datos de HPO y STRINGdb)
 
-### `results/`
-Carpeta donde se almacenan todos los resultados generados:
-- **Tablas CSV:**
-  - `Network_Global_Statistics.csv` - Estadísticas globales de la red (nodos, aristas, densidad, modularidad, etc.)
-  - `Network_Nodes_Info.csv` - Información de cada gen (cluster, grado, betweenness)
-  - `Network_Edges_Info.csv` - Lista de interacciones entre genes
-  - `Enrichment_Cluster_X.csv` - Enriquecimiento funcional por cluster
-- **Figuras PNG:**
-  - `Red_Raynaud.png` - Visualización de la red de interacción
-  - `Clusters_Blobs.png` - Detección de comunidades (Louvain)
-  - `Enrichment_Cluster_X.png` - Gráficos de enriquecimiento GO
+### Dependencias del Sistema (solo si hay errores)
 
-### `software/`
-Contiene la carpeta `R_LIBS/` donde se instalan localmente todas las librerías de R necesarias. Esto permite ejecutar el proyecto sin necesidad de permisos de administrador para las librerías de R.
+> **Nota:** En la mayoría de sistemas con R ya configurado, estas dependencias ya están instaladas. Solo necesitas ejecutar este paso si `setup.sh` falla con errores de compilación.
+
+<details>
+<summary><b>¿Por qué no están incluidas en setup.sh?</b> (click para expandir)</summary>
+
+Estas librerías son **dependencias del sistema operativo** (no de R) y requieren permisos de **superusuario (sudo)**. El script `setup.sh` está diseñado para ejecutarse **sin privilegios de administrador**, instalando únicamente paquetes de R en una carpeta local (`software/R_LIBS`).
+
+**¿Cuándo necesitas instalarlas?**
+- En instalaciones limpias de Linux/WSL recién configuradas
+- En sistemas mínimos (servidores, contenedores Docker base)
+- Si nunca has compilado paquetes de R desde código fuente
+
+**¿Por qué normalmente no hace falta?**
+- **Ubuntu Desktop**: Muchas vienen preinstaladas
+- **Entornos de desarrollo**: Si ya usaste R o compilaste software C/C++, probablemente las tengas
+- **R preconfigurado**: Distribuciones como RStudio suelen instalarlas automáticamente
+
+</details>
+
+Si `setup.sh` falla, instala las dependencias del sistema:
+
+```bash
+sudo apt-get update && sudo apt-get install -y \
+    build-essential \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libcairo2-dev \
+    libgmp-dev \
+    libglpk-dev
+```
+
+<details>
+<summary><b>¿Para qué sirve cada librería?</b> (click para expandir)</summary>
+
+| Librería | Paquete R que la requiere | Función |
+|----------|---------------------------|---------|
+| `build-essential` | Todos (compilación) | Compiladores GCC/G++ para paquetes desde código fuente |
+| `libcurl4-openssl-dev` | httr, curl | Conexiones HTTP/HTTPS para APIs (HPO, STRINGdb) |
+| `libssl-dev` | openssl, httr | Encriptación SSL para conexiones seguras |
+| `libxml2-dev` | XML, xml2, AnnotationDbi | Parsing de archivos XML (datos de Bioconductor) |
+| `libfontconfig1-dev` | systemfonts, ragg | Configuración de fuentes para gráficos |
+| `libfreetype6-dev` | ragg, systemfonts | Renderizado de texto en figuras PNG |
+| `libharfbuzz-dev` | textshaping | Renderizado avanzado de texto (ggplot2) |
+| `libfribidi-dev` | textshaping | Soporte para texto bidireccional |
+| `libpng-dev` | png, ragg | Generación de imágenes PNG |
+| `libtiff5-dev` | tiff | Soporte para imágenes TIFF |
+| `libjpeg-dev` | jpeg | Soporte para imágenes JPEG |
+| `libcairo2-dev` | cairo, ggraph | Gráficos vectoriales de alta calidad |
+| `libgmp-dev` | gmp | Aritmética de precisión múltiple (igraph) |
+| `libglpk-dev` | igraph | Optimización lineal para algoritmos de grafos |
+
+</details>
 
 ---
 
-## 🖥️ Carpeta `code/` - Detalle
+## 🚀 Instalación
 
-### Archivos
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/boorja/project_template.git
+cd project_template
+```
+
+### 2. Instalar dependencias de R
+
+```bash
+cd code
+chmod 755 setup.sh launch.sh
+./setup.sh
+```
+
+> **¿Errores de compilación?** Vuelve a la sección [Dependencias del Sistema](#dependencias-del-sistema-solo-si-hay-errores) e instala las librerías faltantes, luego ejecuta `./setup.sh` de nuevo.
+
+El script `setup.sh`:
+- Crea la carpeta `software/R_LIBS` para instalación local (sin permisos de administrador)
+- Configura C++17 para compatibilidad con paquetes modernos
+- Instala automáticamente todos los paquetes de R y Bioconductor necesarios
+
+---
+
+## 📊 Uso
+
+### Ejecutar el análisis completo
+
+```bash
+cd code
+./launch.sh
+```
+
+Los resultados se generarán en la carpeta `results/`.
+
+---
+
+## 🔬 Pipeline de Análisis
+
+El script `analyse_raynaud.R` ejecuta el siguiente flujo de trabajo:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1. OBTENCIÓN DE DATOS                                          │
+│     └─> Consulta API HPO (HP:0030880 - Raynaud Phenomenon)     │
+│         └─> Extrae genes asociados al fenotipo                  │
+├─────────────────────────────────────────────────────────────────┤
+│  2. CONSTRUCCIÓN DE RED                                         │
+│     └─> Mapeo de genes a STRINGdb (Homo sapiens, score > 700)  │
+│         └─> Genera grafo no dirigido con igraph                 │
+├─────────────────────────────────────────────────────────────────┤
+│  3. PREPROCESAMIENTO                                            │
+│     └─> Elimina nodos aislados (grado = 0)                     │
+│         └─> Simplifica red (quita loops y aristas múltiples)   │
+├─────────────────────────────────────────────────────────────────┤
+│  4. ANÁLISIS TOPOLÓGICO                                         │
+│     └─> Calcula métricas: densidad, grado, betweenness         │
+│         └─> Identifica hubs y bottlenecks                       │
+├─────────────────────────────────────────────────────────────────┤
+│  5. DETECCIÓN DE COMUNIDADES                                    │
+│     └─> Algoritmo de Louvain                                    │
+│         └─> Calcula modularidad (Q)                             │
+├─────────────────────────────────────────────────────────────────┤
+│  6. ENRIQUECIMIENTO FUNCIONAL                                   │
+│     └─> Gene Ontology (Biological Process) por cluster         │
+│         └─> Corrección Benjamini-Hochberg (FDR < 0.05)         │
+├─────────────────────────────────────────────────────────────────┤
+│  7. VISUALIZACIÓN Y EXPORTACIÓN                                 │
+│     └─> Genera figuras PNG (red, clusters, enriquecimiento)    │
+│         └─> Exporta tablas CSV con todas las métricas          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📈 Resultados Generados
+
+### Tablas (CSV)
 
 | Archivo | Descripción |
 |---------|-------------|
-| `setup.sh` | Script de configuración inicial. Instala todas las dependencias de R |
-| `launch.sh` | Script de lanzamiento del análisis principal |
-| `analyse_raynaud.R` | Script R con todo el pipeline de análisis |
+| `Network_Global_Statistics.csv` | Estadísticas globales: nodos, aristas, densidad, modularidad, clustering, diámetro |
+| `Network_Nodes_Info.csv` | Información por gen: cluster, grado, betweenness, STRING_ID |
+| `Network_Edges_Info.csv` | Lista de interacciones entre genes |
+| `Enrichment_Cluster_X.csv` | Términos GO enriquecidos por cluster |
 
-### `setup.sh` - Instalación de dependencias
+### Figuras (PNG)
 
-Este script configura el entorno e instala todas las librerías de R necesarias:
-- Crea la carpeta `software/R_LIBS` para instalación local
-- Utiliza binarios precompilados de Posit Package Manager (evita compilación)
-- Instala: `STRINGdb`, `igraph`, `clusterProfiler`, `org.Hs.eg.db`, `ggplot2`, `ggraph`, y más
+| Archivo | Descripción |
+|---------|-------------|
+| `Red_Raynaud.png` | Visualización principal de la red PPI |
+| `Clusters_Blobs.png` | Detección de comunidades con algoritmo de Louvain |
+| `Enrichment_Cluster_X.png` | Dotplots de enriquecimiento GO por cluster |
 
-**Ejecución:**
+### Métricas Calculadas
+
+| Métrica | Descripción |
+|---------|-------------|
+| **Nodos totales** | Número de genes en la red |
+| **Aristas totales** | Número de interacciones proteína-proteína |
+| **Densidad (ρ)** | Proporción de conexiones existentes vs posibles |
+| **Grado medio (k̄)** | Promedio de conexiones por gen |
+| **Longitud de camino (L̄)** | Distancia promedio entre nodos |
+| **Diámetro (d)** | Distancia máxima entre dos nodos |
+| **Coeficiente de clustering (C)** | Tendencia a formar triángulos |
+| **Modularidad (Q)** | Calidad de la partición en comunidades |
+
+---
+
+## ⚠️ Solución de Problemas
+
+### Error: Fallo en compilación de paquetes
+
+**Causa:** Faltan librerías del sistema.
+
+**Solución:**
+```bash
+sudo apt-get update && sudo apt-get install -y \
+    build-essential libcurl4-openssl-dev libssl-dev libxml2-dev \
+    libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev \
+    libpng-dev libtiff5-dev libjpeg-dev libcairo2-dev libgmp-dev libglpk-dev
+```
+
+### Error: "Pacman no instalado"
+
+**Causa:** No se ejecutó `setup.sh` o falló.
+
+**Solución:**
 ```bash
 cd code
-chmod +x setup.sh
 ./setup.sh
+# Revisar setup.log si hay errores
 ```
 
-### `launch.sh` - Ejecución del análisis
+### Error: Conexión a API HPO
 
-Script que configura las variables de entorno y ejecuta el análisis:
-- Define `R_LIBS_USER` apuntando a las librerías locales
-- Ejecuta `analyse_raynaud.R`
+**Causa:** Problemas de red o API temporalmente no disponible.
 
-**Ejecución:**
+**Solución:**
+- Verificar conexión a internet
+- Intentar nuevamente más tarde
+- Comprobar que `https://ontology.jax.org` está accesible
+
+### Error: igraph/GLPK
+
+**Causa:** Falta `libglpk-dev`.
+
+**Solución:**
 ```bash
-cd code
-chmod +x launch.sh
-./launch.sh
+sudo apt-get install libglpk-dev
 ```
 
-### `analyse_raynaud.R` - Pipeline de análisis
-
-Script R que realiza todo el análisis bioinformático:
-
-1. **Obtención de datos** - Consulta la API de HPO para obtener genes asociados al Fenómeno de Raynaud
-2. **Construcción de red** - Usa STRINGdb para crear la red de interacción proteína-proteína
-3. **Preprocesamiento** - Limpieza de la red (elimina nodos aislados)
-4. **Análisis topológico** - Calcula métricas: densidad, grado, betweenness, etc.
-5. **Detección de comunidades** - Algoritmo de Louvain para identificar clusters
-6. **Análisis de enriquecimiento** - Gene Ontology (GO) para cada cluster
-7. **Visualización** - Genera gráficos de la red y enriquecimiento
-
 ---
 
-## 🚀 Guía de Uso Rápido
+## 👥 Autores
 
-### 1. Requisitos previos
-- Sistema operativo: Linux/Ubuntu (o WSL en Windows)
-- R instalado (versión 4.0+)
-- Conexión a internet (para descargar datos de HPO y STRINGdb)
+Proyecto realizado para la asignatura de **Biología de Sistemas** - Universidad de Málaga.
 
-### 2. Instalación
-```bash
-cd code
-chmod +x setup.sh launch.sh
-./setup.sh
-```
+| Autor | Contribución |
+|-------|--------------|
+| **Borja Pérez Herencia** | Desarrollo código R, análisis topológico, scripts de automatización |
+| **Rubén Manuel Rodríguez Chamorro** | Desarrollo código R, consultas API, enriquecimiento funcional |
+| **Martina Cebolla Salas** | Visualización, redacción introducción y discusión |
+| **Emilio Sancho Carrera** | Funciones auxiliares, redacción conclusiones |
 
-### 3. Ejecución
-```bash
-cd code
-./launch.sh
-```
 
-### 4. Resultados
-Los resultados se generarán en la carpeta `results/`
-
----
-
-## ⚠️ Solución de Errores de Dependencias
-
-Si durante la instalación (`setup.sh`) aparecen errores de compilación o dependencias faltantes, es probable que falten **librerías del sistema** que requieren permisos de administrador.
-
-### ¿Por qué no están incluidas en `setup.sh`?
-
-Estas librerías son **dependencias del sistema operativo** (no de R) y su instalación requiere permisos de **superusuario (sudo)**. El script `setup.sh` está diseñado para ejecutarse **sin permisos de administrador**, instalando únicamente las librerías de R en una carpeta local (`software/R_LIBS`).
-
-No es posible automatizar la instalación de estas dependencias en `setup.sh` porque:
-1. Requieren `sudo` (permisos de root)
-2. Modifican directorios del sistema (`/usr/lib`, `/usr/include`)
-3. El script debe poder ejecutarse por cualquier usuario sin privilegios especiales
-
-### ¿Por qué normalmente no debería ser necesario instalarlas?
-
-Estas librerías son **componentes básicos de desarrollo** que suelen venir preinstalados en la mayoría de distribuciones Linux o se instalan automáticamente al configurar un entorno de desarrollo. En sistemas con:
-- **Ubuntu Desktop**: Muchas ya están incluidas
-- **Entornos de desarrollo configurados**: Si ya has compilado software en C/C++ o usado R anteriormente, probablemente las tengas
-- **Servidores o instalaciones mínimas**: Es más común que falten, ya que se omiten para reducir el tamaño del sistema
-
-Si tu sistema es una instalación limpia o mínima (como WSL recién instalado), es posible que necesites instalarlas manualmente.
-
-### Ejecutar los siguientes comandos (solo si hay errores):
-
-```bash
-sudo apt --fix-broken install
-sudo apt-get install -y build-essential gfortran \
-    libblas-dev liblapack-dev \
-    libfontconfig1-dev libfreetype-dev \
-    libpng-dev libtiff-dev libjpeg-dev \
-    libxml2-dev libssl-dev libcurl4-openssl-dev \
-    libharfbuzz-dev libfribidi-dev \
-    libglpk-dev \
-    libcairo2-dev
-```
-
-### ¿Para qué sirve cada librería?
-
-| Librería | Uso |
-|----------|-----|
-| `build-essential`, `gfortran` | Compilación de paquetes R desde código fuente |
-| `libblas-dev`, `liblapack-dev` | Álgebra lineal (usado por igraph, matrices) |
-| `libfontconfig1-dev`, `libfreetype-dev` | Renderizado de texto en gráficos |
-| `libpng-dev`, `libtiff-dev`, `libjpeg-dev` | Generación de imágenes PNG/TIFF/JPEG |
-| `libxml2-dev` | Parsing XML (usado por AnnotationDbi) |
-| `libssl-dev`, `libcurl4-openssl-dev` | Conexiones HTTPS (descargas de API) |
-| `libharfbuzz-dev`, `libfribidi-dev` | Renderizado de texto avanzado |
-| `libglpk-dev` | Optimización (usado por igraph) |
-
-Después de instalar estas dependencias, vuelve a ejecutar `./setup.sh`.
-
----
-
-## 📊 Métricas Calculadas
-
-El análisis genera las siguientes métricas de red:
-
-- **Nodos totales** - Número de genes en la red
-- **Aristas totales** - Número de interacciones
-- **Densidad** - Proporción de conexiones existentes vs posibles
-- **Grado medio** - Promedio de conexiones por gen
-- **Longitud media de camino** - Distancia promedio entre nodos
-- **Diámetro** - Distancia máxima entre dos nodos
-- **Coeficiente de clustering** - Tendencia a formar grupos
-- **Modularidad (Q)** - Calidad de la partición en comunidades
-
----
-
-## 📚 Tecnologías Utilizadas
-
-- **R** - Lenguaje de análisis estadístico
-- **STRINGdb** - Base de datos de interacciones proteína-proteína
-- **igraph** - Análisis y visualización de redes
-- **clusterProfiler** - Análisis de enriquecimiento funcional
-- **ggplot2/ggraph** - Visualización de datos y redes
-- **HPO API** - Human Phenotype Ontology
-
----
-
-## 👤 Autor
-
-Proyecto realizado para la asignatura de **Biología de Sistemas**.
-
----
-
-## 📄 Licencia
-
-Proyecto académico - Uso educativo.
