@@ -1,83 +1,36 @@
+\section{Materiales y métodos}
+
+\subsection{Materiales}
 
 \subsubsection{Bases de datos biológicas}
 \begin{itemize}
-	\item \textbf{Human Phenotype Ontology (HPO):} Fuente principal para la obtención de genes asociados a fenotipos clínicos. La ontología HPO utiliza un vocabulario estandarizado que permite una vinculación sistemática y reproducible entre las características clínicas de una enfermedad y su base genética \cite{Groza2023, Khler2021}. La enfermedad presenta un \textbf{fenotipo} caracterizado por episodios de vasoconstricción periférica excesiva, desencadenados por el frío o el estrés, que se manifiestan clínicamente mediante cambios trifásicos en la coloración de la piel (palidez, cianosis y eritema), propios del fenómeno de Raynaud.
-	En este estudio, se empleó la versión más actual hasta ahora, correspondiente al día \textbf{22 de noviembre de 2024}, descargada desde su repositorio oficial.
-	
-	\item \textbf{Human Phenotype Ontology (HPO):} Fuente principal para la obtención de genes asociados a fenotipos clínicos. HPO utiliza un vocabulario estandarizado que permite una vinculación sistemática y reproducible entre las características de una enfermedad y su base genética \cite{Groza2023, Khler2021}.
-	
-	\item \textbf{Base de Datos STRING:} Se empleó para construir la red de interacciones. Esta es una base de datos integral que recopila y pondera interacciones proteína-proteína (PPI) a partir de múltiples fuentes de evidencia (experimental, computacional, etc.), asignando a cada una un puntaje de confianza \cite{Szklarczyk2025}.
-	En este estudio, se utilizó la versión más reciente de la base de datos, \textbf{STRING v12.0 (actualizada en abril de 2024)}, descargada desde su repositorio oficial.
+    \item \textbf{Human Phenotype Ontology (HPO):} Fuente principal para la obtención de genes asociados a fenotipos clínicos. HPO utiliza un vocabulario estandarizado que permite una vinculación sistemática y reproducible entre las características de una enfermedad y su base genética \cite{Groza2023, Khler2021}.
+    
+    \item \textbf{Base de Datos STRING:} Se empleó para construir la red de interacciones. Esta es una base de datos integral que recopila y pondera interacciones proteína-proteína (PPI) a partir de múltiples fuentes de evidencia (experimental, computacional, etc.), asignando a cada una un puntaje de confianza \cite{Szklarczyk2025}.
 \end{itemize}
 
 \subsubsection{Software y Paquetes de Análisis}
 Todos los análisis se realizaron en el entorno de programación \textbf{R} (v4.5.2 o superior), utilizando los siguientes paquetes:
 \begin{itemize}
-	\item \texttt{httr} (v1.4.7): Para la comunicación con la API de HPO.
-	\item \texttt{jsonlite} (v2.0.0): Para el procesamiento de los datos en formato JSON obtenidos de la API.
-	\item \texttt{STRINGdb} (v2.2.2): Para consultar la base de datos STRING y construir la red de PPI \cite{Szklarczyk2019}.
-	\item \texttt{igraph} (v2.2.1): Herramienta central para la modelación, visualización y cálculo de propiedades topológicas de la red \cite{Csardi2006}.
-	\item \texttt{clusterProfiler} (v4.14.0): Paquete de Bioconductor para la ejecución de análisis de enriquecimiento funcional \cite{Wu2021}.
-	\item \texttt{jsonlite} (v1.8.8): Para el procesamiento de los datos en formato JSON obtenidos de la API.
-	\item \texttt{STRINGdb} (v2.12.3): Para consultar la base de datos STRING y construir la red de PPI \cite{Szklarczyk2019}.
-	\item \texttt{igraph} (v2.0.3): Herramienta central para la modelación, visualización y cálculo de propiedades topológicas de la red \cite{Csardi2006}.
-	\item \texttt{clusterProfiler} (v4.10.1): Paquete de Bioconductor para la ejecución de análisis de enriquecimiento funcional \cite{Wu2021}.
+    \item \texttt{httr} (v1.4.7): Para la comunicación con la API de HPO.
+    \item \texttt{jsonlite} (v1.8.8): Para el procesamiento de los datos en formato JSON obtenidos de la API.
+    \item \texttt{STRINGdb} (v2.12.3): Para consultar la base de datos STRING y construir la red de PPI \cite{Szklarczyk2019}.
+    \item \texttt{igraph} (v2.0.3): Herramienta central para la modelación, visualización y cálculo de propiedades topológicas de la red \cite{Csardi2006}.
+    \item \texttt{clusterProfiler} (v4.10.1): Paquete de Bioconductor para la ejecución de análisis de enriquecimiento funcional \cite{Wu2021}.
 \end{itemize}
 
 
 \subsubsection{Algoritmos y Enfoques Estadísticos}
 \begin{itemize}
-	\item \textbf{Algoritmo de Detección de Comunidades de Louvain:} Es un método heurístico utilizado para identificar la estructura modular en redes complejas. El algoritmo optimiza iterativamente una métrica de modularidad ($Q$), que cuantifica la densidad de las conexiones dentro de las comunidades en comparación con las conexiones entre ellas. La modularidad se define como:
-	\begin{equation}
-		Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)
-		\label{eq:louvain_modularity}
-	\end{equation}
-	Donde:
-	\begin{itemize}
-		\item $A_{ij}$ es un elemento de la matriz de adyacencia, que vale 1 si los nodos $i$ y $j$ están conectados y 0 en caso contrario.
-		\item $k_i$ y $k_j$ son los grados (número de conexiones) de los nodos $i$ y $j$.
-		\item $m$ es el número total de aristas en la red.
-		\item $\frac{k_i k_j}{2m}$ representa la probabilidad esperada de que exista una arista entre $i$ y $j$ en una red aleatoria con la misma distribución de grados.
-		\item $c_i$ y $c_j$ son las comunidades a las que pertenecen los nodos $i$ y $j$.
-		\item $\delta(c_i, c_j)$ es la función delta de Kronecker, que vale 1 si los nodos están en la misma comunidad ($c_i = c_j$) y 0 en caso contrario.
-	\end{itemize}
-	El algoritmo busca la partición de la red que maximiza el valor de $Q$, revelando subgrupos de nodos densamente conectados que se postula que comparten funciones biológicas.
-	\item \textbf{Algoritmo de Detección de Comunidades de Louvain:} Es un método heurístico utilizado para identificar la estructura modular en redes complejas. El algoritmo optimiza iterativamente una métrica de "modularidad", que cuantifica la densidad de las conexiones dentro de las comunidades en comparación con las conexiones entre ellas. Su aplicación permite particionar la red en subgrupos de nodos densamente conectados, que se postula que comparten funciones biológicas.
-	
-	\item \textbf{Análisis de Sobrerrepresentación (ORA):} Es un enfoque estadístico para determinar si un conjunto de genes de interés está significativamente enriquecido en funciones o vías biológicas predefinidas. El método se basa en la prueba hipergeométrica para calcular el p-valor, que es la probabilidad de observar una superposición igual o mayor a la encontrada por puro azar. La fórmula es:
-	\begin{equation}
-		P(X \ge k) = \sum_{i=k}^{\min(n,K)} \frac{\binom{K}{i} \binom{N-K}{n-i}}{\binom{N}{n}}
-		\label{eq:ora_hypergeometric}
-	\end{equation}
-	Donde:
-	\begin{itemize}
-		\item $N$ es el número total de genes en el genoma de fondo (background).
-		\item $K$ es el número total de genes asociados al término funcional en estudio dentro del fondo.
-		\item $n$ es el número de genes en el conjunto de interés (ej. genes sobreexpresados).
-		\item $k$ es el número de genes en el conjunto de interés que también están asociados al término funcional.
-	\end{itemize}
-	Un p-valor bajo sugiere que la sobrerrepresentación observada no es casual, sino biológicamente significativa.
-	\item \textbf{Análisis de Sobrerrepresentación (ORA):} Es un enfoque estadístico utilizado para determinar si un conjunto de genes de interés está significativamente enriquecido en funciones o vías biológicas predefinidas. El método evalúa, para cada término funcional, si la proporción de genes asociados a él dentro del conjunto de interés es mayor de lo que se esperaría por azar, basándose en la frecuencia de ese término en un conjunto de fondo (el genoma completo).
-	
-	\item \textbf{Corrección de Benjamini-Hochberg (BH):} Al realizar miles de pruebas estadísticas simultáneamente (una por cada término funcional), la probabilidad de obtener falsos positivos (errores de tipo I) se incrementa. El método de Benjamini-Hochberg controla la Tasa de Falso Descubrimiento (FDR), que es la proporción esperada de descubrimientos incorrectos. El procedimiento ordena los p-valores de menor a mayor ($p_{(1)} \le p_{(2)} \le \dots \le p_{(m)}$) y encuentra el mayor $k$ tal que:
-	\begin{equation}
-		p_{(k)} \le \frac{k}{m} \alpha
-		\label{eq:bh_fdr}
-	\end{equation}
-	Donde:
-	\begin{itemize}
-		\item $p_{(k)}$ es el k-ésimo p-valor más pequeño de la lista ordenada.
-		\item $m$ es el número total de pruebas realizadas (el número total de términos GO evaluados).
-		\item $\alpha$ es el nivel de FDR que se desea controlar (comúnmente 0.05).
-	\end{itemize}
-	Todas las hipótesis nulas correspondientes a los p-valores $p_{(1)}, \dots, p_{(k)}$ se rechazan, considerándose significativas. Este ajuste es menos conservador que la corrección de Bonferroni y es ampliamente utilizado en genómica \cite{Benjamini1995}.
-	\item \textbf{Corrección de Benjamini-Hochberg (BH):} Al realizar miles de pruebas estadísticas simultáneamente (una por cada término GO), aumenta la probabilidad de obtener falsos positivos. El método de Benjamini-Hochberg es un procedimiento estándar para controlar la tasa de falso descubrimiento (FDR), ajustando los p-valores para reducir la proporción de resultados significativos que en realidad son fruto del azar \cite{Benjamini1995}.
+    \item \textbf{Algoritmo de Detección de Comunidades de Louvain:} Es un método heurístico utilizado para identificar la estructura modular en redes complejas. El algoritmo optimiza iterativamente una métrica de "modularidad", que cuantifica la densidad de las conexiones dentro de las comunidades en comparación con las conexiones entre ellas. Su aplicación permite particionar la red en subgrupos de nodos densamente conectados, que se postula que comparten funciones biológicas.
+    
+    \item \textbf{Análisis de Sobrerrepresentación (ORA):} Es un enfoque estadístico utilizado para determinar si un conjunto de genes de interés está significativamente enriquecido en funciones o vías biológicas predefinidas. El método evalúa, para cada término funcional, si la proporción de genes asociados a él dentro del conjunto de interés es mayor de lo que se esperaría por azar, basándose en la frecuencia de ese término en un conjunto de fondo (el genoma completo).
+    
+    \item \textbf{Corrección de Benjamini-Hochberg (BH):} Al realizar miles de pruebas estadísticas simultáneamente (una por cada término GO), aumenta la probabilidad de obtener falsos positivos. El método de Benjamini-Hochberg es un procedimiento estándar para controlar la tasa de falso descubrimiento (FDR), ajustando los p-valores para reducir la proporción de resultados significativos que en realidad son fruto del azar \cite{Benjamini1995}.
 \end{itemize}
 
 \subsection{Métodos}
 
-\subsubsection{Adquisición de Datos}
-El conjunto inicial de genes se obtuvo mediante una consulta a la API de la \textbf{Human Phenotype Ontology (HPO)} utilizando el término "Raynaud phenomenon" (ID: \textbf{HP:0030881}). A partir de esta búsqueda se recopiló la lista de símbolos de genes asociados al fenotipo, la cual constituyó la base de información biológica necesaria para la construcción de la red.
 \subsubsection{Adquisición de Datos y Construcción de la Red}
 El conjunto inicial de genes se obtuvo mediante una consulta a la API de la \textbf{Human Phenotype Ontology (HPO)} utilizando el término "Raynaud phenomenon" (ID: \textbf{HP:0030881}). La lista de símbolos de genes resultante se utilizó como entrada para construir una red de interacción proteína-proteína (PPI) para \textit{Homo sapiens} a partir de la base de datos \textbf{STRING}. Se aplicó un filtro de alta confianza, reteniendo únicamente las interacciones con un \textbf{puntaje combinado superior a 0.800}. La red final se representó como un grafo no dirigido.
 
@@ -93,13 +46,9 @@ Cada módulo identificado en el paso anterior fue sometido a un \textbf{Análisi
 
 
 
-\subsubsection{Construcción de la Red}
-La lista de genes obtenida en la etapa anterior se utilizó como entrada para construir una red de interacción proteína-proteína (PPI) específica para \textit{Homo sapiens}. Para ello, se empleó la base de datos \textbf{STRING}, aplicando un filtro de alta confianza que retuvo únicamente las interacciones con un \textbf{puntaje combinado superior a 0.800}. El conjunto depurado de interacciones permitió generar una red robusta, que finalmente se representó como un grafo no dirigido con el fin de facilitar su análisis estructural.
 
 
-\subsubsection{Análisis Estructural y de Comunidades}
-Se analizaron las propiedades topológicas de la red con el paquete \texttt{igraph}. Se calcularon métricas globales (número de nodos y aristas, densidad) y locales (grado promedio, centralidad de cercanía). Posteriormente, se aplicó el \textbf{algoritmo de Louvain} para particionar la red en módulos funcionales basándose en su estructura de conectividad.
 
 
-\subsubsection{Análisis de Enriquecimiento Funcional}
-Cada módulo identificado en el paso anterior se sometió a un \textbf{Análisis de Sobrerrepresentación (ORA)} utilizando el paquete \texttt{clusterProfiler}. Se evaluó el enriquecimiento de términos de la ontología de \textbf{Proceso Biológico (BP)} de Gene Ontology (GO). Los p-valores resultantes se ajustaron mediante el método de \textbf{Benjamini-Hochberg}, y se consideraron como estadísticamente significativos aquellos términos con un \textbf{p-valor ajustado inferior a 0.05}.
+
+
