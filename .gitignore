@@ -14,3 +14,4 @@ results/
 software/
 __pycache__/
 *.zip
+*Zone.Identifier
