@@ -46,9 +46,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-
-	\begin{frontmatter}
 	
+	\begin{frontmatter}
+		
 		\begin{fmbox}
 			\dochead{Research}
 			
@@ -64,36 +64,46 @@
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			\author[
-			  addressref={aff1},                   % ESTA LINEA SE COPIA IGUAL PARA CADA AUTOR
-			  corref={aff1},                       % ESTA LINEA SOLO DEBE TENERLA EL COORDINADOR DEL GRUPO
-			  email={jane.e.doe@cambridge.co.uk}   % VUESTRO CORREO ACTIVO
-			]{\inits{J.E.}\fnm{Jane E.} \snm{Doe}} % inits: INICIALES DE AUTOR, fnm: NOMBRE DE AUTOR, snm: APELLIDOS DE AUTOR
+			addressref={aff1},
+			corref={aff1},
+			email={borja@uma.es}
+			]{\inits{B.P.H.}\fnm{Borja} \snm{Pérez Herencia}}
 			\author[
-			  addressref={aff1},
-			  email={john.RS.Smith@cambridge.co.uk}
-			]{\inits{J.R.S.}\fnm{John R.S.} \snm{Smith}}
+			addressref={aff1},
+			email={rubenmanuel2003@gmail.com}
+			]{\inits{R.M.R.C.}\fnm{Rubén Manuel} \snm{Rodríguez Chamorro}}
+			\author[
+			addressref={aff1},
+			email={martinacs@uma.es}
+			]{\inits{M.C.S.}\fnm{Martina} \snm{Cebolla Salas}}
+			\author[
+			addressref={aff1},
+			email={emiliosancho@uma.es}
+			]{\inits{E.S.C.}\fnm{Emilio} \snm{Sancho Carrera}}
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%% AFILIACION. NO TOCAR                     %%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			\address[id=aff1]{%                           % unique id
-			  \orgdiv{ETSI Informática},             % department, if any
-			  \orgname{Universidad de Málaga},          % university, etc
-			  \city{Málaga},                              % city
-			  \cny{España}                                    % country
+				\orgdiv{ETSI Informática},             % department, if any
+				\orgname{Universidad de Málaga},          % university, etc
+				\city{Málaga},                              % city
+				\cny{España}                                    % country
 			}
-		
+			
 		\end{fmbox}% comment this for two column layout
 		
 		\begin{abstractbox}
-		
+			
 			\begin{abstract} % abstract
-			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%% RESUMEN BREVE DE NO MAS DE 100 PALABRAS   %%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
-			
+				
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%% RESUMEN BREVE DE NO MAS DE 100 PALABRAS   %%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+				
+				El Fenómeno de Raynaud (FR) es un trastorno vasomotor cuya base molecular permanece incompletamente caracterizada. Mediante un enfoque de biología de sistemas, integramos datos fenotípicos de la Human Phenotype Ontology con redes de interacción proteína-proteína de STRINGdb. Construimos una red de 39 genes y 67 interacciones, identificando siete módulos funcionales (modularidad $Q=0.55$). El análisis reveló el eje de interferonopatías tipo I como componente central, con \textit{IRF5} como hub principal e \textit{IFIH1} y \textit{ADAR} como bottlenecks críticos. Nuestros resultados sugieren que el FR representa una manifestación periférica de desregulación inmune sistémica, proponiendo nuevas dianas terapéuticas.
+				
 			\end{abstract}
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,17 +111,23 @@
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			\begin{keyword}
-			\kwd{sample}
-			\kwd{article}
-			\kwd{author}
+				\kwd{Raynaud}
+				\kwd{biología de sistemas}
+				\kwd{interferón}
+				\kwd{redes PPI}
+				\kwd{HPO}
+				\kwd{autoinmunidad}
+				\kwd{análisis de redes}
+				\kwd{enriquecimiento funcional}
+				\kwd{vasoespasmo}
 			\end{keyword}
-		
-		
+			
+			
 		\end{abstractbox}
-	
+		
 	\end{frontmatter}
 	
-
+	
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%% COMIENZO DEL DOCUMENTO REAL %%
@@ -129,17 +145,17 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\begin{backmatter}
-	
+		
 		\section*{Abreviaciones}%% if any
-			Indicar lista de abreviaciones mostrando cada acrónimo a que corresponde
+		Indicar lista de abreviaciones mostrando cada acrónimo a que corresponde
 		
 		\section*{Disponibilidad de datos y materiales}%% if any
-			Debéis indicar aquí un enlace a vuestro repositorio de github.
+		Debéis indicar aquí un enlace a vuestro repositorio de github.
 		
 		\section*{Contribución de los autores}
-			Usando las iniciales que habéis definido al comienzo del documento, debeis indicar la contribución al proyecto en el estilo:
-			J.E : Encargado del análisis de coexpresión con R, escritura de resultados; J.R.S : modelado de red con python y automatizado del código, escritura de métodos; ...
-			OJO: que sea realista con los registros que hay en vuestros repositorios de github. 
+		Usando las iniciales que habéis definido al comienzo del documento, debeis indicar la contribución al proyecto en el estilo:
+		J.E : Encargado del análisis de coexpresión con R, escritura de resultados; J.R.S : modelado de red con python y automatizado del código, escritura de métodos; ...
+		OJO: que sea realista con los registros que hay en vuestros repositorios de github. 
 		
 		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,6 +165,6 @@
 		
 		\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 		\bibliography{bibliography}      % Bibliography file (usually '*.bib' )
-	
+		
 	\end{backmatter}
 \end{document}
