@@ -14,7 +14,12 @@ if command -v module &> /dev/null; then
     module load R/4.1.0-foss-2020b
 fi
 
-# 3. Ejecutar el script R
+# --- 3. CREAR DIRECTORIO DE RESULTADOS (NUEVO) ---
+# El "-p" asegura que no de error si ya existe
+mkdir -p ../results
+echo ">>> Carpeta '../results' verificada."
+
+# --- 4. Ejecutar el script R ---
 # El script ya guarda todo en ../results, así que solo hay que ejecutarlo
 Rscript analyse_raynaud.R
 
