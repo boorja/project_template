@@ -182,26 +182,47 @@ layout_premium <- create_layout(g, layout = "fr", niter = 1000)
 
 p <- suppressMessages(
   ggraph(layout_premium) + 
-  geom_edge_arc(color = "gray85", strength = 0.1, width = 0.6, alpha = 0.7) + 
-  geom_node_point(aes(fill = cluster_factor, size = degree), 
-                  shape = 21, color = "white", stroke = 1.5) +   
-  geom_node_text(aes(label = name, size = degree), 
-                 repel = TRUE, color = "black", fontface = "bold", 
-                 bg.color = "white", bg.r = 0.15,
-                 segment.color = "gray60", segment.size = 0.3,
-                 force = 2, max.overlaps = 30) +
-  scale_fill_brewer(palette = "Set1", name = "Cluster") + 
-  scale_size_continuous(range = c(4, 12), name = "Conectividad", breaks = c(5, 10, 15, 20)) +
-  scale_radius(range = c(3, 5), guide = "none") + 
-  theme_void() + 
-  labs(title = "Red de Interacción Génica: Raynaud Phenomenon",
-       subtitle = paste0("Análisis Topológico | ", vcount(g), " Genes | Q = ", round(Q_val, 2)),
-       caption = "Fuente: HPO & STRINGdb") +
-  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        plot.title = element_text(face = "bold", size = 18, hjust = 0.5, color = "#2c3e50"),
-        legend.position = "right") +
-  guides(fill = guide_legend(override.aes = list(size = 5), order = 1),
-         size = guide_legend(override.aes = list(shape = 21, fill = "gray50", color = "white", stroke = 1), order = 2))
+    geom_edge_arc(color = "gray85", strength = 0.1, width = 0.6, alpha = 0.7) + 
+    
+    # Nodos (Puntos)
+    geom_node_point(aes(fill = cluster_factor, size = degree), 
+                    shape = 21, color = "white", stroke = 1.5) +   
+    
+    # Etiquetas de texto (Genes)
+    # show.legend = FALSE evita la "a" en la leyenda
+    geom_node_text(aes(label = name, size = degree), 
+                   repel = TRUE, color = "black", fontface = "bold", 
+                   bg.color = "white", bg.r = 0.15,
+                   segment.color = "gray60", segment.size = 0.3,
+                   force = 2, max.overlaps = 30,
+                   show.legend = FALSE) + 
+    
+    scale_fill_brewer(palette = "Set1", name = "Cluster") + 
+    
+    # --- CAMBIO AQUÍ: Aumento del rango de tamaños (Texto y Nodos) ---
+    # range = c(6, 16) asegura que la letra más pequeña sea legible (6)
+    scale_size_continuous(range = c(6, 16), name = "Conectividad", breaks = c(5, 10, 15, 20)) +
+    
+    scale_radius(range = c(3, 5), guide = "none") + 
+    theme_void() + 
+    
+    labs(title = "Red de Interacción Génica: Raynaud Phenomenon",
+         subtitle = paste0("Análisis Topológico | ", vcount(g), " Genes | Q = ", round(Q_val, 2))
+         # Sin caption (fuente eliminada)
+    ) +
+    
+    theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
+          plot.title = element_text(face = "bold", size = 18, hjust = 0.5, color = "#2c3e50"),
+          legend.position = "right",
+          # Ajustes de tamaño de leyenda (grandes)
+          legend.title = element_text(size = 16, face = "bold"),
+          legend.text = element_text(size = 14),
+          legend.spacing.y = unit(0.5, 'cm'),
+          legend.key.size = unit(1.0, "cm")) +
+    
+    guides(
+      fill = guide_legend(override.aes = list(size = 8), order = 1),
+      size = guide_legend(override.aes = list(shape = 21, fill = "gray50", color = "white", stroke = 1), order = 2))
 )
 
 ggsave("../results/Red_Raynaud.png", p, width = 14, height = 10, dpi = 300, bg="white")
