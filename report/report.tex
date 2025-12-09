@@ -10,7 +10,7 @@
 \usepackage{amsthm,amsmath}
 \usepackage{graphicx}
 %\RequirePackage[numbers]{natbib}
-%\RequirePackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc} %unicode support
 %\usepackage[applemac]{inputenc} %applemac support if unicode package fails
 %\usepackage[latin1]{inputenc} %UNIX support if unicode package fails
@@ -146,16 +146,36 @@
 	
 	\begin{backmatter}
 		
-		\section*{Abreviaciones}%% if any
-		Indicar lista de abreviaciones mostrando cada acrónimo a que corresponde
+		\section*{Abreviaciones}
+		\textbf{FR}: Fenómeno de Raynaud; 
+		\textbf{PPI}: Interacción proteína-proteína (\textit{Protein-Protein Interaction}); 
+		\textbf{HPO}: Human Phenotype Ontology; 
+		\textbf{GO}: Gene Ontology; 
+		\textbf{BP}: Proceso Biológico (\textit{Biological Process}); 
+		\textbf{IFN}: Interferón; 
+		\textbf{AGS}: Síndrome de Aicardi-Goutières; 
+		\textbf{LES}: Lupus Eritematoso Sistémico; 
+		\textbf{ORA}: Análisis de Sobrerrepresentación (\textit{Over-Representation Analysis}); 
+		\textbf{FDR}: Tasa de Falso Descubrimiento (\textit{False Discovery Rate}); 
+		\textbf{BH}: Benjamini-Hochberg; 
+		\textbf{GWAS}: Estudio de Asociación del Genoma Completo (\textit{Genome-Wide Association Study}); 
+		\textbf{SNP}: Polimorfismo de Nucleótido Único (\textit{Single Nucleotide Polymorphism}); 
+		\textbf{TLR}: Receptor Tipo Toll (\textit{Toll-Like Receptor}); 
+		\textbf{cGAS-STING}: Vía de señalización cGAS-STING; 
+		\textbf{MDA5}: Proteína 5 Asociada a Diferenciación de Melanoma (codificada por \textit{IFIH1}); 
+		\textbf{dsRNA}: RNA de doble cadena (\textit{double-stranded RNA}); 
+		\textbf{ADCC}: Citotoxicidad Celular Dependiente de Anticuerpos (\textit{Antibody-Dependent Cell-mediated Cytotoxicity}); 
+		\textbf{HGPS}: Síndrome de Progeria de Hutchinson-Gilford.
 		
-		\section*{Disponibilidad de datos y materiales}%% if any
-		Debéis indicar aquí un enlace a vuestro repositorio de github.
+		\section*{Disponibilidad de datos y materiales}
+		El código fuente, los datos y los materiales utilizados en este estudio están disponibles en el repositorio de GitHub: \href{https://github.com/boorja/project_template}{https://github.com/boorja/project\_template}
 		
 		\section*{Contribución de los autores}
-		Usando las iniciales que habéis definido al comienzo del documento, debeis indicar la contribución al proyecto en el estilo:
-		J.E : Encargado del análisis de coexpresión con R, escritura de resultados; J.R.S : modelado de red con python y automatizado del código, escritura de métodos; ...
-		OJO: que sea realista con los registros que hay en vuestros repositorios de github. 
+		\textbf{B.P.H.}: Desarrollo del código en R (construcción de la red PPI, análisis topológico con igraph, detección de comunidades Louvain), scripts de automatización y entorno, redacción de materiales y métodos; 
+		\textbf{R.M.R.C.}: Desarrollo del código en R (consultas a la API de HPO, mapeo con STRINGdb, análisis de enriquecimiento funcional con clusterProfiler), redacción de resultados, visualización de la red con ggraph; 
+		\textbf{M.C.S.}: Implementación de funciones de visualización (gráficos de enriquecimiento, exportación de figuras), redacción de la introducción, elaboración de la discusión, revisión bibliográfica; 
+		\textbf{E.S.C.}: Desarrollo de funciones auxiliares, redacción de las conclusiones, elaboración de tablas, revisión bibliográfica y edición final del manuscrito.
+		Todos los autores contribuyeron al diseño del estudio, revisaron y aprobaron la versión final del manuscrito. 
 		
 		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
