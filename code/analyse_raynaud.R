@@ -171,7 +171,7 @@ for (i in cluster_ids) {
         p_enrich <- suppressWarnings(suppressMessages(
             dotplot(ego, showCategory=15) + 
             scale_y_discrete(labels = function(x) str_wrap(x, width = 45)) +
-            ggtitle(paste("Funciones Biológicas - Cluster", i)) +
+            ggtitle(paste("Procesos Biológicos - Cluster", i)) +
             theme_minimal(base_size = 12) +
             theme(plot.title = element_text(face="bold", hjust = 0.5),
                     axis.text.y = element_text(size = 9))
