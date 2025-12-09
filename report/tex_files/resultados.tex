@@ -43,7 +43,7 @@ El análisis de centralidad permitió identificar los nodos críticos que sostie
 
 \textbf{Hubs de conectividad:} El factor de transcripción \textbf{\textit{IRF5}} emergió como el principal \textit{hub} de la red ($k=10$, betweenness $= 0.344$), seguido de \textbf{\textit{IL10}} ($k=9$). Estos genes actúan como ``superconectores'' que integran múltiples vías de señalización inmune.
 
-\textbf{Cuellos de botella (\textit{bottlenecks}):} De forma notable, \textbf{\textit{IFIH1}} ($k=4$, betweenness $= 0.306$) y \textbf{\textit{ADAR}} ($k=5$, betweenness $= 0.239$) presentan una betweenness desproporcionadamente alta respecto a su grado. Estos genes actúan como ``puentes'' críticos entre módulos funcionales, controlando el flujo de información entre la detección de ácidos nucleicos (Cluster 3) y la respuesta inmune efectora (Clusters 1 y 5). Su posición topológica los convierte en dianas terapéuticas de especial interés.
+\textbf{Cuellos de botella (\textit{bottlenecks}):} De forma notable, \textbf{\textit{IFIH1}} ($k=4$, betweenness $= 0.306$) y \textbf{\textit{ADAR}} ($k=5$, betweenness $= 0.239$) presentan una betweenness desproporcionadamente alta respecto a su grado (Tabla \ref{tab:nodes_info}). Estos genes actúan como ``puentes'' críticos entre módulos funcionales, controlando el flujo de información entre la detección de ácidos nucleicos (Cluster 3) y la respuesta inmune efectora (Clusters 1 y 5), como puede observarse en la Figura \ref{fig:Red_Final}. Su posición topológica los convierte en dianas terapéuticas de especial interés.
 
 \begin{table}[h!]
 	\centering
@@ -67,7 +67,7 @@ El análisis de centralidad permitió identificar los nodos críticos que sostie
 
 \subsection{Análisis Modular y Enriquecimiento Funcional}
 
-El algoritmo de Louvain identificó \textbf{7 comunidades} con funciones biológicas diferenciadas. El análisis de enriquecimiento de Gene Ontology (GO) reveló las siguientes especializaciones funcionales:
+El algoritmo de Louvain identificó \textbf{7 comunidades} con funciones biológicas diferenciadas, como se observa en la Figura \ref{fig:Network_Blobs}. El análisis de enriquecimiento de Gene Ontology (GO) reveló las siguientes especializaciones funcionales:
 
 \subsubsection{Cluster 1: Inmunidad Innata y Receptores de Superficie}
 
@@ -105,7 +105,7 @@ Este cluster conecta el Fenómeno de Raynaud con enfermedades autoinmunes sisté
 
 \subsubsection{Cluster 5: Regulación de la Respuesta Adaptativa}
 
-Módulo centrado en la tolerancia inmunológica y regulación de linfocitos (\textit{IL10, HLA-DRB1, PDCD1, CTLA4, FCGR3B, C4A/C4B}):
+Módulo centrado en la tolerancia inmunológica y regulación de linfocitos (\textit{IL10, HLA-DRB1, PDCD1, CTLA4, FCGR3B, C4A/C4B}). El análisis de enriquecimiento (Figura \ref{fig:Enrichment_C5}) reveló:
 
 \begin{itemize}
 	\item \textbf{Inmunidad mediada por linfocitos} (GO:0002449, $p_{adj} = 1.4 \times 10^{-7}$): Respuesta adaptativa humoral y celular.
@@ -151,10 +151,17 @@ La presencia de \textit{LMNA} (lamina A/C) y \textit{ZMPSTE24} vincula este clus
 	\end{minipage}\hfill
 	\begin{minipage}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_6.png}
-		\caption{Cluster 6: Regulación epigenética y estructura nuclear.}
-		\label{fig:Enrichment_C6}
+		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_5.png}
+		\caption{Cluster 5: Regulación de la respuesta inmune adaptativa.}
+		\label{fig:Enrichment_C5}
 	\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.6\textwidth]{figures/Enrichment_Cluster_6.png}
+	\caption{Cluster 6: Regulación epigenética y estructura nuclear.}
+	\label{fig:Enrichment_C6}
 \end{figure}
 
 \subsection{Integración: Arquitectura Funcional de la Red}
