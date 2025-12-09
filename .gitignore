@@ -11,5 +11,6 @@ Py_libs/
 logs/
 data/
 results/
+software/
 __pycache__/
 *.zip
