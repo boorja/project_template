@@ -6,86 +6,137 @@ El estudio comenzó con la identificación de la base genética asociada al feno
 
 \subsection{Construcción y Topología de la Red}
 
-Los genes recuperados se mapearon a sus identificadores de proteína en la base de datos \textbf{STRINGdb} (versión 12.0) \cite{Szklarczyk2025}. Utilizando un umbral de confianza (\textit{combined score}) de 400, se construyó la red de interacción proteína-proteína (PPI). Tras el proceso de filtrado topológico para eliminar nodos desconectados, la red final quedó constituida por \textbf{39 nodos} y \textbf{67 aristas} (Figura \ref{fig:Network_Blobs}).
+Los genes recuperados se mapearon a sus identificadores de proteína en la base de datos \textbf{STRINGdb} (versión 12.0) \cite{Szklarczyk2025}. Utilizando un umbral de confianza (\textit{combined score}) de 700, se construyó la red de interacción proteína-proteína (PPI). Tras el proceso de filtrado topológico para eliminar nodos desconectados, la red final quedó constituida por \textbf{39 nodos} y \textbf{67 aristas} (Figura \ref{fig:Network_Blobs}).
 
-El análisis de las métricas globales (Tabla \ref{tab:global_stats}) revela una red con una densidad baja ($0.09$), característica de redes biológicas dispersas, pero con una estructura comunitaria definida (Modularidad $Q = 0.5487$). El coeficiente de agrupamiento medio (\textit{Clustering Coefficient}) de $0.4269$ sugiere la presencia de nichos funcionales locales bien conectados, a pesar de la baja densidad global.
+El análisis de las métricas globales (Tabla \ref{tab:global_stats}) revela características típicas de redes biológicas \textit{scale-free}. La baja densidad ($\rho = 0.09$) indica una conectividad dispersa, mientras que la elevada modularidad ($Q = 0.55$) evidencia una clara organización en comunidades funcionales. El coeficiente de clustering ($C = 0.43$), notablemente superior al esperado en una red aleatoria equivalente, confirma la presencia de triángulos funcionales y nichos locales altamente interconectados. El diámetro de 10 y la longitud de camino media de 3.68 sugieren una red con estructura de ``mundo pequeño'', donde la información biológica puede propagarse eficientemente entre módulos distantes.
 
 \begin{table}[h!]
 	\centering
-	\caption{Estadísticas Globales de la Red}
+	\caption{Estadísticas Globales de la Red PPI}
 	\label{tab:global_stats}
-	\begin{tabular}{lc}
+	\begin{tabular}{lcc}
 		\toprule
-		\textbf{Métrica} & \textbf{Valor} \\
+		\textbf{Métrica} & \textbf{Valor} & \textbf{Interpretación} \\
 		\midrule
-		Nodos Totales & 39 \\
-		Aristas Totales & 67 \\
-		Densidad de la Red & 0.090 \\
-		Grado Medio & 3.44 \\
-		Longitud de Camino Medio & 3.68 \\
-		Diámetro & 10 \\
-		Coeficiente de Clustering & 0.427 \\
-		Modularidad (Q) & 0.549 \\
+		Nodos Totales & 39 & Genes en la red \\
+		Aristas Totales & 67 & Interacciones validadas \\
+		Densidad ($\rho$) & 0.090 & Red dispersa (típico biológico) \\
+		Grado Medio ($\bar{k}$) & 3.44 & $\sim$3-4 interacciones/gen \\
+		Longitud de Camino ($\bar{L}$) & 3.68 & Comunicación eficiente \\
+		Diámetro ($d$) & 10 & Máxima separación \\
+		Coef. Clustering ($C$) & 0.427 & Alta agrupación local \\
+		Modularidad ($Q$) & 0.549 & Estructura comunitaria fuerte \\
 		\bottomrule
 	\end{tabular}
 \end{table}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figures/Clusters_Blobs.png}
-	\caption{Visualización de la red PPI final (39 nodos). Los colores representan los diferentes clusters funcionales detectados por el algoritmo de modularidad.}
+	\includegraphics[width=0.85\textwidth]{figures/Clusters_Blobs.png}
+	\caption{Detección de comunidades mediante el algoritmo de Louvain. Se identificaron 7 clusters funcionales (diferenciados por color). Los \textit{blobs} delimitan las fronteras de cada comunidad, revelando la arquitectura modular de la red.}
 	\label{fig:Network_Blobs}
 \end{figure}
 
 \subsection{Análisis de Centralidad: Identificación de Hubs y Cuellos de Botella}
 
-El análisis de centralidad permitió identificar los nodos críticos que sostienen la arquitectura de la red (Tabla \ref{tab:nodes_info}). El factor de transcripción \textbf{\textit{IRF5}} emergió como el principal \textit{hub} de la red, presentando el mayor grado ($k=10$) y la mayor centralidad de intermediación (\textit{Betweenness} $= 0.343$). Esto posiciona a \textit{IRF5} como un regulador maestro, capaz de influir en múltiples módulos funcionales y actuar como un cuello de botella en el flujo de información biológica.
+El análisis de centralidad permitió identificar los nodos críticos que sostienen la arquitectura de la red (Tabla \ref{tab:nodes_info}). Se distinguen dos tipos de nodos funcionalmente relevantes:
 
-Otros nodos destacados incluyen a \textbf{\textit{IL10}} ($k=9$) y \textbf{\textit{HLA-DRB1}}, fundamentales en la regulación inmune adaptativa. Es notable el papel de \textbf{\textit{ADAR}} ($k=3$), que a pesar de tener un grado moderado, exhibe la segunda mayor intermediación ($0.239$), sugiriendo un rol crucial como "puente" o conector entre distintos clusters funcionales, probablemente vinculando la detección de ácidos nucleicos con la respuesta inmune global.
+\textbf{Hubs de conectividad:} El factor de transcripción \textbf{\textit{IRF5}} emergió como el principal \textit{hub} de la red ($k=10$, betweenness $= 0.344$), seguido de \textbf{\textit{IL10}} ($k=9$). Estos genes actúan como ``superconectores'' que integran múltiples vías de señalización inmune.
+
+\textbf{Cuellos de botella (\textit{bottlenecks}):} De forma notable, \textbf{\textit{IFIH1}} ($k=4$, betweenness $= 0.306$) y \textbf{\textit{ADAR}} ($k=5$, betweenness $= 0.239$) presentan una betweenness desproporcionadamente alta respecto a su grado. Estos genes actúan como ``puentes'' críticos entre módulos funcionales, controlando el flujo de información entre la detección de ácidos nucleicos (Cluster 3) y la respuesta inmune efectora (Clusters 1 y 5). Su posición topológica los convierte en dianas terapéuticas de especial interés.
 
 \begin{table}[h!]
 	\centering
-	\caption{Top 5 Genes por Centralidad (Grado e Intermediación)}
+	\caption{Genes con mayor centralidad en la red. Se destacan tanto los \textit{hubs} (alto grado) como los \textit{bottlenecks} (alta betweenness relativa al grado).}
 	\label{tab:nodes_info}
-	\begin{tabular}{lcccc}
+	\begin{tabular}{lcccl}
 		\toprule
-		\textbf{Gen} & \textbf{Cluster} & \textbf{Grado} & \textbf{Betweenness} & \textbf{Función Principal} \\
+		\textbf{Gen} & \textbf{Cluster} & \textbf{Grado} & \textbf{Betweenness} & \textbf{Rol Funcional} \\
 		\midrule
-		\textit{IRF5} & 4 & 10 & 0.344 & Activación Cel. B / Regulación \\
-		\textit{IL10} & 5 & 9 & 0.168 & Anti-inflamatorio \\
-		\textit{PTPN22} & 4 & 6 & 0.024 & Señalización Cel. T/B \\
-		\textit{HLA-DRB1} & 5 & 5 & 0.104 & Presentación de antígenos \\
-		\textit{ADAR} & 3 & 5 & 0.239 & Edición de RNA / Inmunidad viral \\
+		\textit{IRF5} & 4 & 10 & 0.344 & Hub: Activación inmune \\
+		\textit{IL10} & 5 & 9 & 0.168 & Hub: Regulación anti-inflamatoria \\
+		\textit{IFIH1} & 1 & 4 & 0.306 & Bottleneck: Sensor viral (MDA5) \\
+		\textit{ADAR} & 3 & 5 & 0.239 & Bottleneck: Edición de RNA \\
+		\textit{IRAK1} & 6 & 4 & 0.171 & Bottleneck: Señalización TLR \\
+		\textit{TLR7} & 1 & 5 & 0.142 & Detección de ssRNA \\
+		\textit{ITGAM} & 1 & 5 & 0.137 & Adhesión/Fagocitosis \\
+		\textit{HLA-DRB1} & 5 & 5 & 0.104 & Presentación antigénica \\
 		\bottomrule
 	\end{tabular}
 \end{table}
 
 \subsection{Análisis Modular y Enriquecimiento Funcional}
 
-La descomposición de la red mediante el algoritmo de modularidad reveló distintas comunidades funcionales. El análisis de enriquecimiento de ontología génica (GO) permitió caracterizar biológicamente estos clusters:
+El algoritmo de Louvain identificó \textbf{7 comunidades} con funciones biológicas diferenciadas. El análisis de enriquecimiento de Gene Ontology (GO) reveló las siguientes especializaciones funcionales:
+
+\subsubsection{Cluster 1: Inmunidad Innata y Receptores de Superficie}
+
+Este módulo agrupa genes implicados en la respuesta inmune innata mediada por receptores de superficie (\textit{FCGR2A, FCGR2B, CR2, ITGAM, TLR7, IFIH1, RNF125}). El enriquecimiento funcional (Figura \ref{fig:Enrichment_C1}) destaca:
 
 \begin{itemize}
-	\item \textbf{Cluster 1: Sistema del Complemento y Fagocitosis.} Este módulo, que incluye genes como \textit{ITGAM} y componentes del complemento (\textit{C1QA, C1QB}), mostró un enriquecimiento significativo en la regulación de la activación del complemento y procesos de fagocitosis (Figura \ref{fig:Enrichment_C1}).
-	
-	\item \textbf{Cluster 3: Respuesta a Interferón Tipo I.} Definido por la presencia de genes como \textit{RNASEH2A/B/C}, \textit{TREX1} y \textit{ADAR}. El enriquecimiento confirma una fuerte asociación con la señalización de interferón alfa y la respuesta celular ante ácidos nucleicos exógenos o endógenos, vinculando este cluster con mecanismos de autoinmunidad tipo interferonopatía (Figura \ref{fig:Enrichment_C3}).
-	
-	\item \textbf{Cluster 4: Activación de Células B.} Liderado por el hub \textit{IRF5} junto con \textit{BANK1} y \textit{PTPN22}, este grupo está enriquecido en procesos de activación de linfocitos B y transducción de señales de respuesta inmune, sugiriendo un componente humoral en la patología (Figura \ref{fig:Enrichment_C4}).
-	
-	\item \textbf{Cluster 6: Organización de la Envoltura Nuclear.} A diferencia de los módulos inmunológicos, este cluster mostró una asociación específica con la organización de la envoltura nuclear, probablemente dirigido por genes estructurales como \textit{LMNA}. Esto sugiere alteraciones en la integridad nuclear funcionalmente distintas, pero topológicamente conectadas a la respuesta inmune (Figura \ref{fig:Enrichment_C6}).
+	\item \textbf{Señalización de receptores Fc} (GO:0002768, $p_{adj} = 3.0 \times 10^{-4}$): Los receptores Fc$\gamma$ median la citotoxicidad celular dependiente de anticuerpos (ADCC) y la fagocitosis de inmunocomplejos.
+	\item \textbf{Regulación de respuesta inmune efectora} (GO:0002697): Control de la activación leucocitaria.
+	\item \textbf{Producción de IFN tipo I} (GO:0032479): Conexión con la vía del interferón a través de \textit{TLR7} e \textit{IFIH1}.
 \end{itemize}
+
+\subsubsection{Cluster 3: Interferonopatía y Metabolismo de Ácidos Nucleicos}
+
+Este cluster representa el núcleo de la respuesta antiviral intrínseca (\textit{RNASEH2A/B/C, TREX1, ADAR, SAMHD1, STING1}). Los términos enriquecidos (Figura \ref{fig:Enrichment_C3}) apuntan directamente al eje de las \textbf{interferonopatías tipo I}:
+
+\begin{itemize}
+	\item \textbf{Reparación de errores de apareamiento} (GO:0006298, $p_{adj} = 1.1 \times 10^{-7}$): El complejo RNaseH2 degrada híbridos RNA:DNA durante la replicación.
+	\item \textbf{Señalización de IFN tipo I} (GO:0060337, $p_{adj} = 1.1 \times 10^{-6}$): Activación sostenida del programa transcripcional de interferón.
+	\item \textbf{Vía cGAS-STING} (GO:0140896): Detección de DNA citosólico aberrante que desencadena inflamación crónica.
+\end{itemize}
+
+Este módulo vincula el Fenómeno de Raynaud con el espectro de las interferonopatías (Síndrome de Aicardi-Goutières), donde mutaciones en estos genes causan acumulación de ácidos nucleicos endógenos que mimetizan infección viral.
+
+\subsubsection{Cluster 4: Activación de Células B y Señalización de Receptores}
+
+Liderado por el hub \textit{IRF5}, junto con \textit{BANK1, PTPN22, BLK, TNFSF4, TNFAIP3} (Figura \ref{fig:Enrichment_C4}):
+
+\begin{itemize}
+	\item \textbf{Respuesta a moléculas bacterianas} (GO:0002237, $p_{adj} = 9.2 \times 10^{-5}$): Activación de vías inflamatorias por PAMPs.
+	\item \textbf{Producción de IL-6} (GO:0032635): Citoquina pro-inflamatoria clave en autoinmunidad.
+	\item \textbf{Señalización del receptor de células B} (GO:0050853): \textit{BLK}, \textit{BANK1} y \textit{PTPN22} modulan el umbral de activación de linfocitos B.
+\end{itemize}
+
+Este cluster conecta el Fenómeno de Raynaud con enfermedades autoinmunes sistémicas donde predomina la disfunción humoral (LES, Esclerosis Sistémica).
+
+\subsubsection{Cluster 5: Regulación de la Respuesta Adaptativa}
+
+Módulo centrado en la tolerancia inmunológica y regulación de linfocitos (\textit{IL10, HLA-DRB1, PDCD1, CTLA4, FCGR3B, C4A/C4B}):
+
+\begin{itemize}
+	\item \textbf{Inmunidad mediada por linfocitos} (GO:0002449, $p_{adj} = 1.4 \times 10^{-7}$): Respuesta adaptativa humoral y celular.
+	\item \textbf{Regulación negativa de activación de células T} (GO:0050868, $p_{adj} = 1.1 \times 10^{-5}$): \textit{PDCD1} (PD-1) y \textit{CTLA4} son \textit{checkpoints} inmunes que previenen la autorreactividad.
+	\item \textbf{Aclaramiento de células apoptóticas} (GO:2000425): Los componentes del complemento \textit{C4A/C4B} facilitan la eliminación de debris celular.
+\end{itemize}
+
+\subsubsection{Cluster 6: Regulación Epigenética y Estructura Nuclear}
+
+A diferencia de los módulos inmunológicos, este cluster (\textit{LMNA, LBR, ZMPSTE24, MECP2, IRAK1}) presenta una firma funcional distintiva (Figura \ref{fig:Enrichment_C6}):
+
+\begin{itemize}
+	\item \textbf{Regulación epigenética} (GO:0040029, $p_{adj} = 1.8 \times 10^{-4}$): Control de la expresión génica mediante modificaciones de cromatina.
+	\item \textbf{Formación de heterocromatina} (GO:0031507): Silenciamiento génico y estabilidad del genoma.
+	\item \textbf{Procesamiento de miRNA} (GO:1903799): Regulación post-transcripcional por \textit{MECP2} y \textit{ZMPSTE24}.
+\end{itemize}
+
+La presencia de \textit{LMNA} (lamina A/C) y \textit{ZMPSTE24} vincula este cluster con las laminopatías, síndromes con afectación vascular y envejecimiento prematuro que pueden cursar con fenómenos vasomotores similares al Raynaud.
 
 \begin{figure}[h!]
 	\centering
 	\begin{minipage}{0.48\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_1.png}
-		\caption{Cluster 1: Regulación del Complemento.}
+		\caption{Cluster 1: Inmunidad innata y receptores de superficie celular.}
 		\label{fig:Enrichment_C1}
 	\end{minipage}\hfill
 	\begin{minipage}{0.48\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_3.png}
-		\caption{Cluster 3: Señalización Interferón Tipo I.}
+		\caption{Cluster 3: Señalización de IFN tipo I e interferonopatías.}
 		\label{fig:Enrichment_C3}
 	\end{minipage}
 \end{figure}
@@ -95,13 +146,24 @@ La descomposición de la red mediante el algoritmo de modularidad reveló distin
 	\begin{minipage}{0.48\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_4.png}
-		\caption{Cluster 4: Activación de Células B.}
+		\caption{Cluster 4: Activación de células B y respuesta inflamatoria.}
 		\label{fig:Enrichment_C4}
 	\end{minipage}\hfill
 	\begin{minipage}{0.48\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/Enrichment_Cluster_6.png}
-		\caption{Cluster 6: Organización Nuclear.}
+		\caption{Cluster 6: Regulación epigenética y estructura nuclear.}
 		\label{fig:Enrichment_C6}
 	\end{minipage}
+\end{figure}
+
+\subsection{Integración: Arquitectura Funcional de la Red}
+
+La visualización integrada de la red (Figura \ref{fig:Red_Final}) permite apreciar la convergencia de los distintos módulos funcionales. Los \textit{bottlenecks} identificados (\textit{IFIH1, ADAR, IRAK1}) actúan como nodos de integración que conectan la detección de ácidos nucleicos aberrantes (Cluster 3) con la respuesta inmune innata (Cluster 1) y la activación de células B (Cluster 4). Esta arquitectura sugiere que el Fenómeno de Raynaud, más allá de un trastorno vasomotor aislado, puede representar una manifestación periférica de desregulación inmune sistémica con componentes de interferonopatía y autoinmunidad humoral.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/Red_Raynaud.png}
+	\caption{Red de interacción génica final. El tamaño de los nodos es proporcional a su grado de conectividad. Los colores representan los 7 clusters funcionales. Nótese la posición central de \textit{IRF5} e \textit{IL10} como hubs integradores, y el rol de \textit{IFIH1} y \textit{ADAR} como puentes entre módulos.}
+	\label{fig:Red_Final}
 \end{figure}
